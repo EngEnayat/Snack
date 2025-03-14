@@ -11,10 +11,10 @@ bool swLeft = false;
 
 int main()
 {
+    random_number();
     while (true)
     {
         clearScreen();
-
         if (kbhit())
         {
             char c = getKey();
@@ -32,7 +32,7 @@ int main()
         }
 
         function(direction);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200)); 
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
     }
     return 0;
 }

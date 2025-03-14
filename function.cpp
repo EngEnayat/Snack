@@ -6,10 +6,30 @@
 #include <fcntl.h>
 #include <string>
 
+#include <ctime> // for random numbers
+#include <random>
 #include <sys/ioctl.h>
 #include <unistd.h>
-
+int point =0;
 int x = 6, y = 20;
+int xWindow, yWindow;
+int xRandom, yRandom;
+
+void random_number()
+{
+    getMaxWindowSize(xWindow, yWindow);
+    static bool seeded = false;
+    if (!seeded) {
+        srand(static_cast<unsigned int> (time(nullptr)));
+        seeded = true;
+    }
+    
+    do {
+        xRandom = 1 + (rand() % (xWindow - 2)); 
+        yRandom = 1 + (rand() % (yWindow - 2));
+    } while (xRandom == 0 || yRandom == 0); //
+}
+
 
 void getMaxWindowSize(int &rows, int &cols) {
     struct winsize w;
@@ -67,17 +87,35 @@ void function(Direction &direction)
 {
     static int x = 6;
     static int y = 20;
-    static bool swUp = false, swDown = false, swRight = true, swLeft = false; 
 
+    if (x == xRandom && y == yRandom)
+    {
+        printf("\a");
+        point++;
+        int oldX = xRandom, oldY = yRandom;
+        while (xRandom == oldX && yRandom == oldY) {
+            random_number();
+        }
+    }
+
+    if (xRandom > 0 && yRandom > 0) {
+        gotoxy(xRandom, yRandom);
+        std::cout << "@";
+    }
+    
+    static bool swUp = false, swDown = false, swRight = true, swLeft = false; 
     gotoxy(x, y);
     int maxX , maxY;
     getMaxWindowSize(maxX, maxY);
     if(x >= maxX || y>= maxY || x==0 || y==0)
     {
+        clearScreen();
         maxX = (int) (maxX/4);
         maxY = (int) (maxY/2);
         gotoxy(maxX, maxY);
         std::cout << "The Game finished!" << std::endl;
+        gotoxy(++maxX, maxY);
+        std::cout<< "your points: " << point << "\n\n\n"<<std::endl;
         exit(0);
     }
     std::cout << "#";
@@ -113,5 +151,7 @@ void function(Direction &direction)
             }else x++;
             break;
     }
+    gotoxy(0,0);
+    std::cout << "Your Points: " << point;
     gotoxy(x,y);
 }

@@ -10,9 +10,8 @@ void getMaxWindowSize(int &rows, int &cols);
 bool kbhit();
 enum Direction { UP, DOWN, LEFT, RIGHT };
 void function(Direction &direction);
-
+void random_number();
 extern Direction direction;
 extern int x, y;
 extern bool swUp, swDown, swRight, swLeft;
-
 #endif
